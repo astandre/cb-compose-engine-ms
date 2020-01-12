@@ -21,8 +21,8 @@ This project is a template for building microservices with Flask.
 
 Running scripts
 
-docker build -t kbsbot/compose_engine . -f docker/Dockerfile
+docker build -t kbsbot_compose_engine . -f docker/Dockerfile
 
-docker run --rm  --name=compose-engine -p 5001:8000 -it kbsbot/compose_engine
+docker run --rm  --name=compose-engine -p 5000:8001 -it kbsbot_compose_engine
 
 

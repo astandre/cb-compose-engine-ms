@@ -1,5 +1,5 @@
 import sys
-from setuptools import setup, find_package
+from setuptools import setup, find_packages
 from kbsbot.compose_engine import __version__
 
 with open('requirements.txt') as f:
@@ -16,12 +16,12 @@ setup(name='compose-engine',
       include_package_data=True,
       install_requires=install_requires,
       author="André Herrera",
-      author_ewmail="andreherrera97@hotmail.com",
+      author_email="andreherrera97@hotmail.com",
       license="MIT",
       keywords=["chatbots", "microservices", "linked data"],
       entry_points={
           'console_scripts': [
-              'compose-engine = kbsbot.compose-engine.run:app',
+              'compose-engine = kbsbot.compose_engine.run:app',
           ],
       }
       )
