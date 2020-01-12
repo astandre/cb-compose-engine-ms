@@ -9,8 +9,11 @@ COPY . /app
 RUN pip install -r /app/requirements.txt
 RUN pip install /app/
 
-#WORKDIR /app/kbsbot/compose_engine
 EXPOSE 8001
-CMD ["gunicorn", "-b", "0.0.0.0:8001", "compose-engine"]
+CMD ["gunicorn", "-b", "0.0.0.0:8001", "compose-engine", "--config-file", "./app/settings.ini", "-d"]
+
+
+
+
 
 
