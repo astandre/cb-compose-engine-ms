@@ -2,15 +2,16 @@ FROM python:3.7
 
 RUN pip install gunicorn
 
-COPY docker/settings.ini /app/settings.ini
+COPY docker/settings.ini /app/kbsbot/compose_engine/settings.ini
 
 COPY . /app
 
 RUN pip install -r /app/requirements.txt
 RUN pip install /app/
 
+WORKDIR /app/kbsbot/compose_engine
 EXPOSE 8001
-CMD ["gunicorn", "-b", "0.0.0.0:8001", "compose-engine", "--config-file", "./app/settings.ini", "-d"]
+CMD ["gunicorn", "-b", "0.0.0.0:8001", "run:app"]
 
 
 

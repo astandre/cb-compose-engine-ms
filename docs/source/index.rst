@@ -1,7 +1,7 @@
 Compose-Engine
 =================
 
-This microservice is used to identify the requirements of an intent, provide options to complete information and return answer if the intent is completed.
+This microservice is  intended to communicate with other services in order to determine intents and entities to retrieve the answer for the channel.
 
 Check also th API description here:
 
@@ -9,6 +9,8 @@ Check also th API description here:
    :maxdepth: 2
 
    api
+   services
+   utils
 
 Check also the TODO lis for this project:
 

@@ -8,6 +8,23 @@ comp = JsonBlueprint('comp', __name__)
 
 @comp.route('/compose')
 def compose():
+    """
+    his view encapsulates the method get_intent_options.
+    It requires an Intent.
+
+    :return: A dict containing the answer, the intent an entities found
+
+
+    .. todo:: if intent is None inform admin.
+
+    .. todo:: Check if entities are null
+
+    .. todo:: Handle when answer has a resource
+
+    .. todo:: check in context
+
+    .. todo:: Get options
+    """
     data = request.get_json()
     print(data)
     agent = data["agent"]
@@ -21,51 +38,54 @@ def compose():
     if intent is None:
         print("Looking for intent")
         intent = discover_intent(agent, user_input)
-        # TODO check if entities are null
+        print("Intent found ", intent)
+        if intent is None:
+            pass
     if len(entities) == 0:
         print("Looking for entities")
         entities = discover_entities(agent, user_input)
+        print("Entities found ", entities)
 
     requirements = get_requirements(intent)
-    context_search = False
+    print("Requirements ", requirements)
     options = False
-    resource = False
-    while True:
+    missing_entities = None
+    if len(requirements) > 0:
         missing, missing_entities = check_requirements(requirements, entities)
-        if missing is False:
-            answer = get_answer(intent, entities)
-            if "resource" in answer:
-                resource = True
-            else:
-                answer_type = "text"
-            break
-        else:
-            if context_search is False:
-                entities = find_in_context(user, agent, channel, missing_entities)
-                context_search = True
-            else:
-                options = True
-                break
+        print("Missing requirements", missing, " :", missing_entities)
 
+        if missing is True:
+            entities = find_in_context(user, agent, channel, missing_entities)
+
+            missing, missing_entities = check_requirements(requirements, entities)
+            if missing is True:
+                print("Still Missing requirements", missing_entities)
+                options = True
+
+    resource = False
+    options_list = []
+    print("OPTIONS ", options)
     if options is True:
-        answer = get_options(missing_entities)
+        options_list = get_options(missing_entities)
         answer_type = "options"
+    else:
+        print("Looking for answer")
+        answer = get_answer(intent, entities)
+
+        if "resource" in answer:
+            resource = True
+        else:
+            answer_type = "text"
+
+    print("Answer", answer)
 
     if resource:
-        # TODO handle when answer has a resource
         pass
 
     final_answer = build_answer(answer, answer_type)
-    """
-    TODO add all updated info
-    intent
-    entites
-    answer {
-    "type":
-    "text":
-    "options": []
-    }
-    
-    """
-    print(final_answer)
-    return {"answer": "TODO bien", "answer_type": answer_type}
+    print("FINAL ", final_answer)
+    resp = {"context": {"intent": intent, "entites": entities},
+            "answer": {"answer_type": answer_type, "text": final_answer}}
+    if len(options_list) > 0:
+        resp["answer"]["options"] = options_list
+    return resp

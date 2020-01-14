@@ -1,28 +1,19 @@
-microservice
-============
+Compose-Engine
+==============
 
-**DISCLAIMER** This repository is part of Runnerly, an application made for
-the Python Microservices Development. It was made for educational
-purpose and not suitable for production. It's still being updated.
-If you find any issue or want to talk with the author, feel free to
-open an issue in the issue tracker.
+This microservice is  intended to communicate with other services in order to determine intents and entities to retrieve the answer for the channel.
 
 
-This project is a template for building microservices with Flask.
+This project is part of the architecture described in:
+Herrera, Andre & Yaguachi, Lady & Piedra, Nelson. (2019). Building Conversational Interface for Customer Support Applied to Open Campus an Open Online Course Provider. 11-13. 10.1109/ICALT.2019.00011.
 
-.. image:: https://coveralls.io/repos/github/tarekziade/microservice/badge.svg?branch=master
-   :target: https://coveralls.io/github/tarekziade/microservice?branch=master
 
-.. image:: https://travis-ci.org/tarekziade/microservice.svg?branch=master
-   :target: https://travis-ci.org/tarekziade/microservice
 
-.. image:: https://readthedocs.org/projects/microservice/badge/?version=latest
-   :target: https://microservice.readthedocs.io
 
 Running scripts
 
-docker build -t kbsbot_compose_engine . -f docker/Dockerfile
 
-docker run --rm  --name=compose-engine -p 5000:8001 -it kbsbot_compose_engine
+``docker build -t astandre/kbsbot_compose_engine . -f docker/Dockerfile``
 
 
+``docker run --rm  --name=compose-engine -p 5000:8000 -it astandre/kbsbot_compose_engine``
