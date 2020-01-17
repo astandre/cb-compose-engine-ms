@@ -10,8 +10,8 @@ RUN pip install -r /app/requirements.txt
 RUN pip install /app/
 
 WORKDIR /app/kbsbot/compose_engine
-EXPOSE 8001
-CMD ["gunicorn", "-b", "0.0.0.0:8001", "run:app"]
+EXPOSE 8000
+CMD ["gunicorn", "-b", "0.0.0.0:8000", "run:app"]
 
 
 

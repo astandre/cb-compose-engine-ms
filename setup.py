@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 from kbsbot.compose_engine import __version__
 
 setup(name='compose-engine',
-      description="",
+      description="This microservice is  intended to communicate with other services in order to determine intents and entities to retrieve the answer for the channel.",
       long_description=open('README.rst').read(),
       version=__version__,
       packages=find_packages(),
@@ -13,7 +13,7 @@ setup(name='compose-engine',
       author="André Herrera",
       author_email="andreherrera97@hotmail.com",
       license="MIT",
-      keywords=["chatbots", "microservices", "linked data"],
+      keywords=["chatbots", "microservices"],
       entry_points={
           'console_scripts': [
               'compose-engine = kbsbot.compose_engine.run:main',

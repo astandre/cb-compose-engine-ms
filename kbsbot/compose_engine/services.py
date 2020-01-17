@@ -25,10 +25,10 @@ def discover_intent(agent, text):
     """
     url = NLP_ENGINE_URL + "/intents"
     try:
-        r = session.post(url, json={"agent": agent, "sentence": text})
+        r = session.get(url, json={"agent": agent, "sentence": text})
         if r.status_code == 200:
             response = r.json()
-            return response["intent"][0]["label"]
+            return response["intent"][0]["prediction"]
     except requests.exceptions.RequestException as e:
         print(e)
 
@@ -45,7 +45,7 @@ def discover_entities(agent, text):
     """
     url = NLP_ENGINE_URL + "/entities"
     try:
-        r = session.post(url, json={"agent": agent, "sentence": text})
+        r = session.get(url, json={"agent": agent, "sentence": text})
         if r.status_code == 200:
             response = r.json()
             entities = []
@@ -53,7 +53,7 @@ def discover_entities(agent, text):
             for entity in response["entities"]:
                 entities.append({
                     "type": entity["entity"],
-                    "value": entity["label"],
+                    "value": entity["prediction"],
                 })
             return entities
     except requests.exceptions.RequestException as e:
