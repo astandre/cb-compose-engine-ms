@@ -1,5 +1,11 @@
 Compose-Engine
 ==============
+.. image:: https://travis-ci.org/astandre/cb-compose-engine-ms.svg?branch=master
+    :target: https://travis-ci.org/astandre/cb-compose-engine-ms
+
+.. image:: https://readthedocs.org/projects/cb-compose-engine-ms/badge/?version=latest
+    :target: https://cb-compose-engine-ms.readthedocs.io/en/latest/?badge=latest
+    :alt: Documentation Status
 
 This microservice is  intended to communicate with other services in order to determine intents and entities to retrieve the answer for the channel.
 
