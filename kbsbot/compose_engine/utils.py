@@ -29,16 +29,19 @@ def check_requirements(requirements, entities):
       :return: If entities are missing, a list of this missing entities
     """
     missing = requirements
-    complete = False
-    for entity in entities:
-        for i, needed_entity in enumerate(requirements):
-            if entity == needed_entity:
-                del missing[i]
-                break
+    missing_status = True
+    if len(requirements) > len(entities):
+        return missing_status, missing
+    else:
+        for entity in entities:
+            for i, needed_entity in enumerate(requirements):
+                if entity == needed_entity:
+                    del missing[i]
+                    break
 
-    if len(missing) == 0:
-        complete = True
-    return complete, missing
+        if len(missing) == 0:
+            missing_status = False
+        return missing_status, missing
 
 
 def build_answer(raw_answer, answer_type):
@@ -51,8 +54,9 @@ def build_answer(raw_answer, answer_type):
 
     :return: the raw text of the final answer
     """
-    final_answer = raw_answer["template"]
+    final_answer = None
     if answer_type == "text":
+        final_answer = raw_answer["template"]
         re_template = re.compile(r"{%[a-zA-Z]*%}")
         found = re_template.findall(final_answer)
         for aux in found:
@@ -68,4 +72,8 @@ def build_answer(raw_answer, answer_type):
                             answer_aux += " " + part
                     final_answer = final_answer.replace(aux, answer_aux)
                     break
-        return final_answer
+    elif answer_type == "options":
+        final_answer = "De que quieres conocer?"
+        # TODO get template of requirments
+
+    return final_answer

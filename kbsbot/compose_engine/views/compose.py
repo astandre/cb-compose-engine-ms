@@ -6,7 +6,7 @@ from kbsbot.compose_engine.services import *
 comp = JsonBlueprint('comp', __name__)
 
 
-@comp.route('/compose')
+@comp.route('/compose', methods=["GET"])
 def compose():
     """
     his view encapsulates the method get_intent_options.
@@ -55,21 +55,29 @@ def compose():
         print("Missing requirements", missing, " :", missing_entities)
 
         if missing is True:
-            entities = find_in_context(user, agent, channel, missing_entities)
-
-            missing, missing_entities = check_requirements(requirements, entities)
+            found_entities = find_in_context(user, agent, channel, missing_entities)
+            print("Found entities in context", found_entities)
+            missing, missing_entities = check_requirements(requirements, found_entities)
             if missing is True:
                 print("Still Missing requirements", missing_entities)
                 options = True
+            else:
+                entities = found_entities
 
     resource = False
-    options_list = []
-    print("OPTIONS ", options)
+    options_list = None
+    print("OPTIONS STATUS", options)
     if options is True:
-        options_list = get_options(missing_entities)
-        answer_type = "options"
+        options_list = get_options(missing_entities[0])
+        print("OPTIONS LIST", options_list)
+        if len(options_list) == 0:
+            return {"message": "Must configure options to resolve entity", "status": 404}
+        else:
+            answer = {"options": options_list}
+            answer_type = "options"
     else:
         print("Looking for answer")
+        print(intent, entities)
         answer = get_answer(intent, entities)
 
         if "resource" in answer:
@@ -77,7 +85,11 @@ def compose():
         else:
             answer_type = "text"
 
+    if "status" in answer:
+        return answer
+
     print("Answer", answer)
+    print("Answer type", answer_type)
 
     if resource:
         pass
@@ -86,6 +98,6 @@ def compose():
     print("FINAL ", final_answer)
     resp = {"context": {"intent": intent, "entites": entities},
             "answer": {"answer_type": answer_type, "text": final_answer}}
-    if len(options_list) > 0:
+    if options_list is not None:
         resp["answer"]["options"] = options_list
     return resp

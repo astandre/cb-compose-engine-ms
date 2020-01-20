@@ -2,6 +2,10 @@ from requests import Session
 import requests
 import os
 
+# NLP_ENGINE_URL = "http://127.0.0.1:5001"
+# INTENTS_MANAGMENT_URL = "http://127.0.0.1:5002"
+# CONTEXT_MANAGMENT_URL = "http://127.0.0.1:5003"
+
 NLP_ENGINE_URL = os.environ.get('NLP_ENGINE_URL')
 INTENTS_MANAGMENT_URL = os.environ.get('INTENTS_MANAGMENT_URL')
 CONTEXT_MANAGMENT_URL = os.environ.get('CONTEXT_MANAGMENT_URL')
@@ -73,9 +77,7 @@ def get_requirements(intent):
         r = session.get(url, json={"intent": intent})
         if r.status_code == 200:
             response = r.json()
-            print(response)
             requires = []
-
             for entity in response["requires"]:
                 requires.append(entity)
             return requires
@@ -90,9 +92,12 @@ def get_options(entity):
         :param entity: The entity from where options will be retrieved
 
         :return: A list of options to complete an entity
+
+        .. todo:: give a list of entities
         """
     url = INTENTS_MANAGMENT_URL + "/entity/options"
     try:
+        print({"entity": entity})
         r = session.get(url, json={"entity": entity})
         if r.status_code == 200:
             response = r.json()
@@ -103,7 +108,7 @@ def get_options(entity):
 
 
 def find_in_context(user, agent, channel, entities):
-    pass
+    return []
 
 
 def get_answer(intent, entities):

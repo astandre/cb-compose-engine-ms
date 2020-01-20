@@ -3,6 +3,7 @@ from kbsbot.compose_engine.app import create_app
 # import argparse
 import os
 
+
 # def main(args=sys.argv[1:]):
 # def main():
 #     # parser = argparse.ArgumentParser(description='Compose engine service')
@@ -24,16 +25,17 @@ import os
 #     # else:
 #     #     print("bon voyage!")
 
-
-if __name__ == "__main__":
-    _HERE = os.path.dirname(__file__)
-    _SETTINGS = os.path.join(_HERE, 'settings.ini')
-    app = create_app(settings=_SETTINGS)
-    # app = create_app()
+def main():
+    app = create_app()
     host = app.config.get('host', '0.0.0.0')
     port = app.config.get('port', 5000)
     debug = app.config.get('DEBUG', False)
+
     app.run(debug=debug, host=host, port=port, use_reloader=debug)
+
+
+if __name__ == "__main__":
+    main()
 else:
     _HERE = os.path.dirname(__file__)
     _SETTINGS = os.path.join(_HERE, 'settings.ini')
