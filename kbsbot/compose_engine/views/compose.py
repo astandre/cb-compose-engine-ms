@@ -1,6 +1,6 @@
 from flakon import JsonBlueprint
 from flask import request
-from kbsbot.compose_engine.utils import *
+from kbsbot.compose_engine.compose_utils import *
 from kbsbot.compose_engine.services import *
 
 comp = JsonBlueprint('comp', __name__)

@@ -35,7 +35,7 @@ def check_requirements(requirements, entities):
     else:
         for entity in entities:
             for i, needed_entity in enumerate(requirements):
-                if entity == needed_entity:
+                if entity["type"] == needed_entity:
                     del missing[i]
                     break
 
