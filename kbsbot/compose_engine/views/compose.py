@@ -50,7 +50,7 @@ def compose():
     print("Requirements ", requirements)
     options = False
     missing_entities = None
-    if len(requirements) > 0:
+    if len(requirements) > 0 and requirements is not None:
         missing, missing_entities = check_requirements(requirements, entities)
         print("Missing requirements", missing, " :", missing_entities)
 
