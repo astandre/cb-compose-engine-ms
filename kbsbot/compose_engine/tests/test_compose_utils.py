@@ -1,5 +1,5 @@
 import unittest
-from compose_utils import *
+from kbsbot.compose_engine.compose_utils import *
 
 
 class TestUtils(unittest.TestCase):
