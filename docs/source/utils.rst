@@ -5,10 +5,10 @@ Here we present all the utility methods to help transform the data to present to
 
 These are the main methods of this class:
 
-.. autofunction:: utils.clean_uri
+.. autofunction:: compose_utils.clean_uri
 
-.. autofunction:: utils.check_requirements
+.. autofunction:: compose_utils.check_requirements
 
-.. autofunction:: utils.build_answer
+.. autofunction:: compose_utils.build_answer
 
 
