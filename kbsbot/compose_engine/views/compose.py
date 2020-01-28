@@ -40,7 +40,8 @@ def compose():
         intent = discover_intent(agent, user_input)
         print("Intent found ", intent)
         if intent is None:
-            pass
+            return {"message": "Intent not found"}
+    # TODO check and replace entities
     if len(entities) == 0:
         print("Looking for entities")
         entities = discover_entities(agent, user_input)
@@ -112,3 +113,13 @@ def intent():
     intent_found = discover_intent(agent, user_input)
     print("Intent found ", intent)
     return {"intent": intent_found}
+
+
+@comp.route('/requires', methods=["GET"])
+def get_requirements_view():
+    data = request.get_json()
+    local_intent = data["context"]["intent"]
+    print("Looking for intent")
+    requires = get_requirements(local_intent)
+    print("Intent found ", intent)
+    return {"requires": requires}
