@@ -113,13 +113,11 @@ def compose():
 
 
 @comp.route('/intent', methods=["GET"])
-def intent():
+def get_intent_view():
     data = request.get_json()
     agent = data["agent"]
     user_input = data["user_input"]
-    print("Looking for intent")
     intent_found = discover_intent(agent, user_input)
-    print("Intent found ", intent)
     return {"intent": intent_found}
 
 
@@ -127,9 +125,7 @@ def intent():
 def get_requirements_view():
     data = request.get_json()
     local_intent = data["context"]["intent"]
-    print("Looking for intent")
     requires = get_requirements(local_intent)
-    print("Intent found ", intent)
     return {"requires": requires}
 
 
