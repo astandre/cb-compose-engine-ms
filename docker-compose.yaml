@@ -19,10 +19,11 @@ services:
   compose-engine:
     restart: always
     image: astandre/kbsbot_compose_engine
+    container_name: kbsbot_compose_engine
     environment:
-      - NLP_ENGINE_URL=http://172.28.1.4:5001
-      - INTENTS_MANAGMENT_URL=http://172.28.1.3:5002
-      - CONTEXT_MANAGMENT_URL=http://0.0.0.0:5003
+      - NLP_ENGINE_URL=http://172.28.1.3:8001
+      - INTENTS_MANAGMENT_URL=http://172.28.1.4:002
+      - CONTEXT_MANAGMENT_URL=http://0.0.0.0:8003
     ports:
       - "5000:8000"
     networks:
@@ -32,6 +33,7 @@ services:
   nlp-engine:
     restart: always
     image: astandre/kbsbot_nlpengine
+    container_name: kbsbot_nlpengine
     ports:
       - "5001:8001"
     networks:
@@ -42,6 +44,7 @@ services:
   intents-managment:
     restart: always
     image: astandre/kbsbot_intents_managment
+    container_name: kbsbot_intents_managment
     ports:
       - "5002:8002"
     networks:

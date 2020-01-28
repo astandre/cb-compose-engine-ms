@@ -101,3 +101,14 @@ def compose():
     if options_list is not None:
         resp["answer"]["options"] = options_list
     return resp
+
+
+@comp.route('/intent', methods=["GET"])
+def intent():
+    data = request.get_json()
+    agent = data["agent"]
+    user_input = data["user_input"]
+    print("Looking for intent")
+    intent_found = discover_intent(agent, user_input)
+    print("Intent found ", intent)
+    return {"intent": intent_found}
