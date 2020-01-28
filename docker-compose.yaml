@@ -22,7 +22,7 @@ services:
     container_name: kbsbot_compose_engine
     environment:
       - NLP_ENGINE_URL=http://172.28.1.3:8001
-      - INTENTS_MANAGMENT_URL=http://172.28.1.4:002
+      - INTENTS_MANAGMENT_URL=http://172.28.1.4:8002
       - CONTEXT_MANAGMENT_URL=http://0.0.0.0:8003
     ports:
       - "5000:8000"

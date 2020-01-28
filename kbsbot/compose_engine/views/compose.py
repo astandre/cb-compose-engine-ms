@@ -112,7 +112,7 @@ def compose():
     return resp
 
 
-@comp.route('/intent', methods=["GET"])
+@comp.route('/test/intent', methods=["GET"])
 def get_intent_view():
     data = request.get_json()
     agent = data["agent"]
@@ -121,7 +121,7 @@ def get_intent_view():
     return {"intent": intent_found}
 
 
-@comp.route('/requires', methods=["GET"])
+@comp.route('/test/requires', methods=["GET"])
 def get_requirements_view():
     data = request.get_json()
     local_intent = data["context"]["intent"]
@@ -129,7 +129,7 @@ def get_requirements_view():
     return {"requires": requires}
 
 
-@comp.route('/answer', methods=["GET"])
+@comp.route('/test/answer', methods=["GET"])
 def get_answer_view():
     data = request.get_json()
     agent = data["agent"]
