@@ -77,10 +77,10 @@ def get_requirements(intent):
         r = session.get(url, json={"intent": intent})
         if r.status_code == 200:
             response = r.json()
-            requires = []
-            for entity in response["requires"]:
-                requires.append(entity)
-            return requires
+            if "requires" in response:
+                return response["requires"]
+            else:
+                return None
     except requests.exceptions.RequestException as e:
         print(e)
 

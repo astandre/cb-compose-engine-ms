@@ -32,14 +32,15 @@ def compose():
     channel = data["channel"]
     answer = None
     answer_type = None
-    intent = data["context"]["intent"]
+    local_intent = data["context"]["intent"]
     entities = data["context"]["entities"]
     user_input = data["user_input"]
-    if intent is None:
+    message = None
+    if local_intent is None:
         print("Looking for intent")
-        intent = discover_intent(agent, user_input)
-        print("Intent found ", intent)
-        if intent is None:
+        local_intent = discover_intent(agent, user_input)
+        print("Intent found ", local_intent)
+        if local_intent is None:
             return {"message": "Intent not found"}
     # TODO check and replace entities
     if len(entities) == 0:
@@ -47,23 +48,26 @@ def compose():
         entities = discover_entities(agent, user_input)
         print("Entities found ", entities)
 
-    requirements = get_requirements(intent)
+    requirements = get_requirements(local_intent)
     print("Requirements ", requirements)
     options = False
     missing_entities = None
-    if len(requirements) > 0 and requirements is not None:
-        missing, missing_entities = check_requirements(requirements, entities)
-        print("Missing requirements", missing, " :", missing_entities)
+    if requirements is not None:
+        if len(requirements) > 0:
+            missing, missing_entities = check_requirements(requirements, entities)
+            print("Missing requirements", missing, " :", missing_entities)
 
-        if missing is True:
-            found_entities = find_in_context(user, agent, channel, missing_entities)
-            print("Found entities in context", found_entities)
-            missing, missing_entities = check_requirements(requirements, found_entities)
             if missing is True:
-                print("Still Missing requirements", missing_entities)
-                options = True
-            else:
-                entities = found_entities
+                found_entities = find_in_context(user, agent, channel, missing_entities)
+                print("Found entities in context", found_entities)
+                missing, missing_entities = check_requirements(requirements, found_entities)
+                if missing is True:
+                    print("Still Missing requirements", missing_entities)
+                    options = True
+                else:
+                    entities = found_entities
+    else:
+        message = "Null requirements"
 
     resource = False
     options_list = None
@@ -78,8 +82,8 @@ def compose():
             answer_type = "options"
     else:
         print("Looking for answer")
-        print(intent, entities)
-        answer = get_answer(intent, entities)
+        print(local_intent, entities)
+        answer = get_answer(local_intent, entities)
 
         if "resource" in answer:
             resource = True
@@ -97,29 +101,31 @@ def compose():
 
     final_answer = build_answer(answer, answer_type)
     print("FINAL ", final_answer)
-    resp = {"context": {"intent": intent, "entites": entities},
+    resp = {"context": {"intent": local_intent, "entities": entities},
             "answer": {"answer_type": answer_type, "text": final_answer}}
     if options_list is not None:
         resp["answer"]["options"] = options_list
+    if message is not None:
+        resp["message"] = message
     return resp
 
 
-@comp.route('/intent', methods=["GET"])
-def intent():
-    data = request.get_json()
-    agent = data["agent"]
-    user_input = data["user_input"]
-    print("Looking for intent")
-    intent_found = discover_intent(agent, user_input)
-    print("Intent found ", intent)
-    return {"intent": intent_found}
-
-
-@comp.route('/requires', methods=["GET"])
-def get_requirements_view():
-    data = request.get_json()
-    local_intent = data["context"]["intent"]
-    print("Looking for intent")
-    requires = get_requirements(local_intent)
-    print("Intent found ", intent)
-    return {"requires": requires}
+# @comp.route('/intent', methods=["GET"])
+# def intent():
+#     data = request.get_json()
+#     agent = data["agent"]
+#     user_input = data["user_input"]
+#     print("Looking for intent")
+#     intent_found = discover_intent(agent, user_input)
+#     print("Intent found ", intent)
+#     return {"intent": intent_found}
+#
+#
+# @comp.route('/requires', methods=["GET"])
+# def get_requirements_view():
+#     data = request.get_json()
+#     local_intent = data["context"]["intent"]
+#     print("Looking for intent")
+#     requires = get_requirements(local_intent)
+#     print("Intent found ", intent)
+#     return {"requires": requires}
