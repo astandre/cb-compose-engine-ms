@@ -35,7 +35,7 @@ def compose():
     local_intent = data["context"]["intent"]
     entities = data["context"]["entities"]
     user_input = data["user_input"]
-    message = None
+    message = ""
     if local_intent is None:
         print("Looking for intent")
         local_intent = discover_intent(agent, user_input)
@@ -67,7 +67,7 @@ def compose():
                 else:
                     entities = found_entities
     else:
-        message = "Null requirements"
+        message += "Null requirements"
 
     resource = False
     options_list = None
@@ -84,14 +84,16 @@ def compose():
         print("Looking for answer")
         print(local_intent, entities)
         answer = get_answer(local_intent, entities)
-
-        if "resource" in answer:
-            resource = True
+        if answer is not None:
+            if "resource" in answer:
+                resource = True
+            else:
+                answer_type = "text"
         else:
-            answer_type = "text"
+            message += "Null requirements"
 
-    if "status" in answer:
-        return answer
+    # if "status" in answer:
+    #     return answer
 
     print("Answer", answer)
     print("Answer type", answer_type)
@@ -105,27 +107,38 @@ def compose():
             "answer": {"answer_type": answer_type, "text": final_answer}}
     if options_list is not None:
         resp["answer"]["options"] = options_list
-    if message is not None:
+    if len(message) > 0:
         resp["message"] = message
     return resp
 
 
-# @comp.route('/intent', methods=["GET"])
-# def intent():
-#     data = request.get_json()
-#     agent = data["agent"]
-#     user_input = data["user_input"]
-#     print("Looking for intent")
-#     intent_found = discover_intent(agent, user_input)
-#     print("Intent found ", intent)
-#     return {"intent": intent_found}
-#
-#
-# @comp.route('/requires', methods=["GET"])
-# def get_requirements_view():
-#     data = request.get_json()
-#     local_intent = data["context"]["intent"]
-#     print("Looking for intent")
-#     requires = get_requirements(local_intent)
-#     print("Intent found ", intent)
-#     return {"requires": requires}
+@comp.route('/intent', methods=["GET"])
+def intent():
+    data = request.get_json()
+    agent = data["agent"]
+    user_input = data["user_input"]
+    print("Looking for intent")
+    intent_found = discover_intent(agent, user_input)
+    print("Intent found ", intent)
+    return {"intent": intent_found}
+
+
+@comp.route('/requires', methods=["GET"])
+def get_requirements_view():
+    data = request.get_json()
+    local_intent = data["context"]["intent"]
+    print("Looking for intent")
+    requires = get_requirements(local_intent)
+    print("Intent found ", intent)
+    return {"requires": requires}
+
+
+@comp.route('/answer', methods=["GET"])
+def get_answer_view():
+    data = request.get_json()
+    agent = data["agent"]
+    user_input = data["user_input"]
+    entities = discover_entities(agent, user_input)
+    local_intent = discover_intent(agent, user_input)
+    result = get_answer(local_intent, entities)
+    return {"result": result, "entities": entities, "intent": local_intent}
