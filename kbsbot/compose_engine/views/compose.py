@@ -46,7 +46,8 @@ def compose():
         local_intent = discover_intent(agent, user_input)
         print("Intent found ", local_intent)
         if local_intent is None:
-            return {"message": "Intent not found"}
+            return {"context": {"intent": local_intent, "entities": entities},
+                    "answer": {"answer_type": answer_type, "text": "Lo siento no he podido entener a que te refieres"}}
     # TODO check and replace entities
     if len(entities) == 0:
         print("Looking for entities")

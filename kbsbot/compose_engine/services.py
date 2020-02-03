@@ -35,6 +35,7 @@ def discover_intent(agent, text):
             return response["intent"][0]["prediction"]
     except requests.exceptions.RequestException as e:
         print(e)
+        return None
 
 
 def discover_entities(agent, text):
@@ -62,6 +63,7 @@ def discover_entities(agent, text):
             return entities
     except requests.exceptions.RequestException as e:
         print(e)
+        return []
 
 
 def get_requirements(intent):
@@ -83,6 +85,7 @@ def get_requirements(intent):
                 return None
     except requests.exceptions.RequestException as e:
         print(e)
+        return None
 
 
 def get_options(entity):
@@ -105,10 +108,11 @@ def get_options(entity):
 
     except requests.exceptions.RequestException as e:
         print(e)
+        return None
 
 
 def find_in_context(user, entities):
-    url = CONTEXT_MANAGMENT_URL + "//context/entities"
+    url = CONTEXT_MANAGMENT_URL + "/context/entities"
     try:
         r = session.get(url, json={"user": user, "entities": entities})
         if r.status_code == 200:
