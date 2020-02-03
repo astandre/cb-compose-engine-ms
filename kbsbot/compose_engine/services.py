@@ -112,6 +112,12 @@ def get_options(entity):
 
 
 def find_in_context(user, entities):
+    """
+    This method looks for information in the conversation thread.
+     :param user: The id of the user to find information
+
+     :param entities: The entities to be found in context.
+    """
     url = CONTEXT_MANAGMENT_URL + "/context/entities"
     try:
         r = session.get(url, json={"user": user, "entities": entities})

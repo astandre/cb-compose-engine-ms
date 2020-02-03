@@ -24,6 +24,8 @@ def compose():
     .. todo:: check in context
 
     .. todo:: Get options
+
+    .. todo:: get resolution question for entity and intent
     """
     data = request.get_json()
     print(data)
