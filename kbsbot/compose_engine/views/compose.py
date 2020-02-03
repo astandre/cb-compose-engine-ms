@@ -29,12 +29,17 @@ def compose():
     print(data)
     agent = data["agent"]
     user = data["user"]
-    channel = data["channel"]
     answer = None
     answer_type = None
-    local_intent = data["context"]["intent"]
-    entities = data["context"]["entities"]
     user_input = data["user_input"]
+    local_intent = None
+    entities = []
+    if "context" in data:
+        if "intent" in data["context"]:
+            local_intent = data["context"]["intent"]
+        if "entities" in data["context"]:
+            entities = data["context"]["entities"]
+
     message = ""
     if local_intent is None:
         print("Looking for intent")
@@ -56,11 +61,10 @@ def compose():
         if len(requirements) > 0:
             missing, missing_entities = check_requirements(requirements, entities)
             print("Missing requirements", missing, " :", missing_entities)
-
             if missing is True:
                 found_entities = find_in_context(user, missing_entities)
-                print("Found entities in context", found_entities)
-                missing, missing_entities = check_requirements(requirements, found_entities)
+                print("Found entities in context", found_entities["entities"])
+                missing, missing_entities = check_requirements(requirements, found_entities["entities"])
                 if missing is True:
                     print("Still Missing requirements", missing_entities)
                     options = True
