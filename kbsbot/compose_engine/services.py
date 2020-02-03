@@ -107,8 +107,16 @@ def get_options(entity):
         print(e)
 
 
-def find_in_context(user, agent, channel, entities):
-    return []
+def find_in_context(user, entities):
+    url = CONTEXT_MANAGMENT_URL + "//context/entities"
+    try:
+        r = session.get(url, json={"user": user, "entities": entities})
+        if r.status_code == 200:
+            response = r.json()
+            entities = response["entities"]
+            return entities
+    except requests.exceptions.RequestException as e:
+        print(e)
 
 
 def get_answer(intent, entities):

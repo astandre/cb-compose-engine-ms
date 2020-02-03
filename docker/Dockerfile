@@ -11,7 +11,7 @@ RUN pip install /app/
 
 ENV NLP_ENGINE_URL="http://0.0.0.0:8001"
 ENV INTENTS_MANAGMENT_URL="http://0.0.0.0:8002"
-ENV CONTEXT_MANAGMENT_URL="http://0.0.0.0:8003"
+ENV CONTEXT_MANAGMENT_URL="http://0.0.0.0:8006"
 
 WORKDIR /app/kbsbot/compose_engine
 EXPOSE 8000
