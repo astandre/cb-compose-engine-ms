@@ -77,3 +77,26 @@ def build_answer(raw_answer, answer_type):
         # TODO get template of requirments
 
     return final_answer
+
+
+def update_entities(current_entities, new_entities):
+    """
+    This method updates the current list of entities, by looking for the same type of entity.
+
+    Parameters:
+     :param current_entities: Current list of entities
+
+     :param new_entities: New list of entities
+
+     :return: Current list of entities updated
+
+    """
+    if len(current_entities) == 0:
+        current_entities = new_entities
+    else:
+        for i, c_entity in enumerate(current_entities):
+            for n_entity in new_entities:
+                if c_entity["type"] == n_entity["type"]:
+                    current_entities[i] = n_entity
+                    break
+    return current_entities

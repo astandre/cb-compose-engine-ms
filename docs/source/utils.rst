@@ -11,4 +11,6 @@ These are the main methods of this class:
 
 .. autofunction:: compose_utils.build_answer
 
+.. autofunction:: compose_utils.update_entities
+
 

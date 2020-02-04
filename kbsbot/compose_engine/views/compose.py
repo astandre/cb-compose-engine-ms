@@ -50,7 +50,6 @@ def compose():
         if local_intent is None:
             return {"context": {"intent": local_intent, "entities": entities},
                     "answer": {"answer_type": answer_type, "text": "Lo siento no he podido entener a que te refieres"}}
-    # TODO check and replace entities
     if len(entities) == 0:
         print("Looking for entities")
         entities = discover_entities(agent, user_input)
@@ -60,20 +59,30 @@ def compose():
     print("Requirements ", requirements)
     options = False
     missing_entities = None
-    if requirements is not None:
-        if len(requirements) > 0:
-            missing, missing_entities = check_requirements(requirements, entities)
-            print("Missing requirements", missing, " :", missing_entities)
-            if missing is True:
-                found_entities = find_in_context(user, missing_entities)
-                print("Found entities in context", found_entities)
-                if len(found_entities) > 0:
-                    missing, missing_entities = check_requirements(requirements, found_entities)
-                if missing is True:
-                    print("Still Missing requirements", missing_entities)
-                    options = True
-                else:
-                    entities = found_entities
+    if requirements is not None and len(requirements) > 0:
+        missing, missing_entities = check_requirements(requirements, entities)
+        print("Missing requirements", missing, " :", missing_entities)
+        if missing is True:
+            found_entities = discover_entities(agent, user_input)
+            print("Found entities in text", found_entities)
+            if len(found_entities) > 0:
+                temp_entities = update_entities(entities, found_entities)
+                missing, missing_entities = check_requirements(requirements, temp_entities)
+                print("Missing requirements", missing, " :", missing_entities)
+                if missing is False:
+                    entities = temp_entities
+        if missing is True:
+            found_entities = find_in_context(user, missing_entities)
+            print("Found entities in context", found_entities)
+            if len(found_entities) > 0:
+                temp_entities = update_entities(entities, found_entities)
+                missing, missing_entities = check_requirements(requirements, temp_entities)
+                print("Missing requirements", missing, " :", missing_entities)
+                if missing is False:
+                    entities = temp_entities
+        if missing is True:
+            print("Still Missing requirements", missing_entities)
+            options = True
     else:
         message += "Null requirements"
 
@@ -84,7 +93,8 @@ def compose():
         options_list = get_options(missing_entities[0])
         print("OPTIONS LIST", options_list)
         if len(options_list) == 0:
-            return {"message": "Must configure options to resolve entity", "status": 404}
+            return {"context": {"intent": local_intent, "entities": entities},
+                    "answer": {"answer_type": answer_type, "text": "No existen opciones, que deseas conocer?"}}
         else:
             answer = {"options": options_list}
             answer_type = "options"

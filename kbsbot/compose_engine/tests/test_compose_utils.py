@@ -114,3 +114,17 @@ class TestUtils(unittest.TestCase):
                      "value": "http://127.0.0.1/ockb/resources/EAIG5"}]
         missing_status, missing = check_requirements(requirements, entities)
         self.assertEqual(missing_status, True)
+
+    def test_update_entities(self):
+        result = update_entities(
+            [{'type': 'http://127.0.0.1/ockb/course/ontology/Course',
+              'value': 'http://127.0.0.1/ockb/resources/INTRECON2'},
+             {'type': 'http://127.0.0.1/ockb/course/ontology/Cosas',
+              'value': 'http://127.0.0.1/ockb/resources/INTRECON2'}],
+            [{'type': 'http://127.0.0.1/ockb/course/ontology/Course', 'value': 'http://127.0.0.1/ockb/resources/MSPV'}])
+        self.assertTrue(len(result) == 2)
+
+        result = update_entities([],
+                                 [{'type': 'http://127.0.0.1/ockb/course/ontology/Course',
+                                   'value': 'http://127.0.0.1/ockb/resources/MSPV'}])
+        self.assertTrue(len(result) == 1)

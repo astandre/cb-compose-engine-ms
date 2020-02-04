@@ -32,7 +32,10 @@ def discover_intent(agent, text):
         r = session.get(url, json={"agent": agent, "sentence": text})
         if r.status_code == 200:
             response = r.json()
-            return response["intent"][0]["prediction"]
+            if len(response["intent"]) > 0:
+                return response["intent"][0]["prediction"]
+            else:
+                return None
     except requests.exceptions.RequestException as e:
         print(e)
         return None
