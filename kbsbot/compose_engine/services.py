@@ -100,11 +100,11 @@ def get_options(entity):
         """
     url = INTENTS_MANAGMENT_URL + "/entity/options"
     try:
-        print({"entity": entity})
+        # print({"entity": entity})
         r = session.get(url, json={"entity": entity})
         if r.status_code == 200:
             response = r.json()
-            return response["options"]
+            return response
 
     except requests.exceptions.RequestException as e:
         print(e)
