@@ -123,10 +123,14 @@ def find_in_context(user, entities):
         r = session.get(url, json={"user": user, "entities": entities})
         if r.status_code == 200:
             response = r.json()
-            entities = response["entities"]
-            return entities
+            if "entities" in response:
+                entities = response["entities"]
+                return entities
+            else:
+                return []
     except requests.exceptions.RequestException as e:
         print(e)
+        return []
 
 
 def get_answer(intent, entities):

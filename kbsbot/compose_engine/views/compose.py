@@ -66,8 +66,9 @@ def compose():
             print("Missing requirements", missing, " :", missing_entities)
             if missing is True:
                 found_entities = find_in_context(user, missing_entities)
-                print("Found entities in context", found_entities["entities"])
-                missing, missing_entities = check_requirements(requirements, found_entities["entities"])
+                print("Found entities in context", found_entities)
+                if len(found_entities) > 0:
+                    missing, missing_entities = check_requirements(requirements, found_entities)
                 if missing is True:
                     print("Still Missing requirements", missing_entities)
                     options = True
