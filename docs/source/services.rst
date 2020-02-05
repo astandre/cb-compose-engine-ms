@@ -19,3 +19,7 @@ These are the main methods of this class:
 
 .. autofunction:: services.find_in_context
 
+.. autofunction:: services.get_agent_data
+
+.. autofunction:: services.get_intent_rq
+

@@ -154,3 +154,47 @@ def get_answer(intent, entities):
             return response
     except requests.exceptions.RequestException as e:
         print(e)
+
+
+def get_agent_data(agent):
+    """
+        This service connects to the microservice *Intents Management* in order to information about and agent
+
+        :param agent: A valid agent name
+
+        :return: A dict containing agent, a description and the different intents.
+
+        """
+    url = INTENTS_MANAGMENT_URL + "/agent/info"
+    try:
+        r = session.get(url, json={"agent": agent})
+        if r.status_code == 200:
+            response = r.json()
+            return response
+
+    except requests.exceptions.RequestException as e:
+        print(e)
+        return None
+
+
+def get_intent_rq(intent, entity):
+    """
+        This service connects to the microservice *Intents Management* in order to get the resolution question of an intent
+
+        :param intent: A valid intent
+
+        :param entity: A valid entity
+
+        :return: A dict containing intent, a entity and the resolution question.
+
+        """
+    url = INTENTS_MANAGMENT_URL + "/intent/rq"
+    try:
+        r = session.get(url, json={"intent": intent, "entity": entity})
+        if r.status_code == 200:
+            response = r.json()
+            return response
+
+    except requests.exceptions.RequestException as e:
+        print(e)
+        return None

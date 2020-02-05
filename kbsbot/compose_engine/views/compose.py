@@ -21,11 +21,6 @@ def compose():
 
     .. todo:: Handle when answer has a resource
 
-    .. todo:: check in context
-
-    .. todo:: Get options
-
-    .. todo:: get resolution question for entity and intent
     """
     data = request.get_json()
     print(data)
@@ -36,11 +31,17 @@ def compose():
     user_input = data["user_input"]
     local_intent = None
     entities = []
+
     if "context" in data:
         if "intent" in data["context"]:
             local_intent = data["context"]["intent"]
         if "entities" in data["context"]:
             entities = data["context"]["entities"]
+
+    if "help" in data:
+        agent_data = get_agent_data(agent)
+        return {"context": {"intent": local_intent, "entities": entities},
+                "answer": {"answer_type": "help", "help": agent_data}}
 
     message = ""
     if local_intent is None:
@@ -49,7 +50,7 @@ def compose():
         print("Intent found ", local_intent)
         if local_intent is None:
             return {"context": {"intent": local_intent, "entities": entities},
-                    "answer": {"answer_type": answer_type, "text": "Lo siento no he podido entener a que te refieres"}}
+                    "answer": {"answer_type": "text", "text": "Lo siento no he podido entener a que te refieres"}}
     if len(entities) == 0:
         print("Looking for entities")
         entities = discover_entities(agent, user_input)
@@ -98,6 +99,8 @@ def compose():
         else:
             answer = {"options": options_list}
             answer_type = "options"
+            resolution_question = get_intent_rq(local_intent, options_list["entity"])
+            answer["template"] = resolution_question["rq"]
     else:
         print("Looking for answer")
         print(local_intent, entities)
@@ -122,9 +125,8 @@ def compose():
     final_answer = build_answer(answer, answer_type)
     print("FINAL ", final_answer)
     resp = {"context": {"intent": local_intent, "entities": entities},
-            "answer": {"answer_type": answer_type, "text": final_answer}}
-    if options_list is not None:
-        resp["answer"]["options"] = options_list
+            "answer": final_answer}
+
     if len(message) > 0:
         resp["message"] = message
     return resp

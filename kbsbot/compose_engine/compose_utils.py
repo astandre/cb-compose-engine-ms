@@ -55,6 +55,7 @@ def build_answer(raw_answer, answer_type):
     :return: the raw text of the final answer
     """
     final_answer = None
+    answer = {}
     if answer_type == "text":
         final_answer = raw_answer["template"]
         re_template = re.compile(r"{%[a-zA-Z]*%}")
@@ -72,11 +73,14 @@ def build_answer(raw_answer, answer_type):
                             answer_aux += " " + part
                     final_answer = final_answer.replace(aux, answer_aux)
                     break
+        answer["type"] = answer_type
+        answer["text"] = final_answer
     elif answer_type == "options":
-        final_answer = "De que quieres conocer?"
-        # TODO get template of requirments
-
-    return final_answer
+        final_answer = raw_answer["template"]
+        answer["type"] = answer_type
+        answer["text"] = final_answer
+        answer["options"] = raw_answer["options"]
+    return answer
 
 
 def update_entities(current_entities, new_entities):
