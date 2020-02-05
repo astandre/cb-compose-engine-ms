@@ -30,8 +30,8 @@ class TestUtils(unittest.TestCase):
             "template": "Las fechas importantes del curso son {%beginDate%} y termina el dia {%endDate%}"
         }
         answer = build_answer(answer_dict, "text")
-        self.assertIn(answer_dict["answer"][0]["value"][0], answer)
-        self.assertIn(answer_dict["answer"][1]["value"][0], answer)
+        self.assertIn(answer_dict["answer"][0]["value"][0], answer["text"])
+        self.assertIn(answer_dict["answer"][1]["value"][0], answer["text"])
         # Testing missing property
         answer_dict = {
             "answer": [
@@ -45,7 +45,7 @@ class TestUtils(unittest.TestCase):
             "template": "Las fechas importantes del curso son {%beginDate%} y termina el dia {%endDate%}"
         }
         answer = build_answer(answer_dict, "text")
-        self.assertIn("{%endDate%}", answer)
+        self.assertIn("{%endDate%}", answer["text"])
         # Testing missing value
         answer_dict = {
             "answer": [
@@ -63,7 +63,7 @@ class TestUtils(unittest.TestCase):
             "template": "Las fechas importantes del curso son {%beginDate%} y termina el dia {%endDate%}"
         }
         answer = build_answer(answer_dict, "text")
-        self.assertNotIn("24 Nov 2019", answer)
+        self.assertNotIn("24 Nov 2019", answer["text"])
 
         # Testing list values
         answer_dict = {
@@ -88,7 +88,24 @@ class TestUtils(unittest.TestCase):
         answer = build_answer(answer_dict, "text")
 
         for value in answer_dict["answer"][0]["value"]:
-            self.assertIn(value, answer)
+            self.assertIn(value, answer["text"])
+
+        answer_dict = {"options": {
+            "entity": "http://127.0.0.1/ockb/course/ontology/Course",
+            "options": [
+                {
+                    "option": "Desarrollo comunitario ",
+                    "payload": "http://127.0.0.1/ockb/resources/CD12"
+                },
+                {
+                    "option": "Fundamentos matemáticos ",
+                    "payload": "http://127.0.0.1/ockb/resources/MATHFUND2"
+                }
+            ]},
+            "template": "De que curso quieres conocer"
+        }
+        answer = build_answer(answer_dict, "options")
+        self.assertIn(answer_dict["template"], answer["text"])
 
     def test_check_requirements(self):
         # Testing best scenario

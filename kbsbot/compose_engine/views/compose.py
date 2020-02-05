@@ -38,7 +38,7 @@ def compose():
         if "entities" in data["context"]:
             entities = data["context"]["entities"]
 
-    if "help" in data:
+    if "help" in data and data["help"] is True:
         agent_data = get_agent_data(agent)
         return {"context": {"intent": local_intent, "entities": entities},
                 "answer": {"answer_type": "help", "help": agent_data}}
