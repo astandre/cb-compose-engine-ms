@@ -57,12 +57,12 @@ def discover_entities(agent, text):
         if r.status_code == 200:
             response = r.json()
             entities = []
-
-            for entity in response["entities"]:
-                entities.append({
-                    "type": entity["entity"],
-                    "value": entity["prediction"],
-                })
+            if len(response["entities"]) > 0:
+                for entity in response["entities"]:
+                    entities.append({
+                        "type": entity["entity"],
+                        "value": entity["prediction"],
+                    })
             return entities
     except requests.exceptions.RequestException as e:
         print(e)
