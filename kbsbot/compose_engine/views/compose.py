@@ -3,10 +3,16 @@ from flask import request
 from kbsbot.compose_engine.compose_utils import *
 from kbsbot.compose_engine.services import *
 from kbsbot.compose_engine.database import *
+import logging
 
 comp = JsonBlueprint('comp', __name__)
 
 TRAINING_TOOL = "http://example.com/train"
+
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+
+logger = logging.getLogger(__name__)
 
 
 @comp.route('/compose', methods=["GET"])
@@ -18,8 +24,6 @@ def compose():
     :return: A dict containing the answer, the intent an entities found
 
 
-    .. todo:: if intent is None inform admin.
-
     .. todo:: Check if entities are null
 
     .. todo:: Handle when answer has a resource
@@ -27,6 +31,7 @@ def compose():
     """
     data = request.get_json()
     print(data)
+    logger.info("[COMPOSE] >>>>> Incoming data  %s", data)
     agent = data["agent"]
     user = data["user"]
     answer = None
@@ -48,10 +53,12 @@ def compose():
 
     message = ""
     if local_intent is None:
-        print("Looking for intent")
+        # print("Looking for intent")
         local_intent = discover_intent(agent, user_input)
-        print("Intent found ", local_intent)
+        # print("Intent found ", local_intent)
+        logger.info("[COMPOSE] >>>>> Intent found %s", local_intent)
         if local_intent is None:
+            logger.info("[COMPOSE] >>>>> Intent not found, appending message to unclassified")
             agent = Agent.query.filter_by(name=data["agent"]).first()
             add_unclassified_message(agent, data["message"])
             not_intent_msg = f"Lo siento no he podido entener a que te refieres." \
@@ -59,12 +66,14 @@ def compose():
             return {"context": {"intent": None, "entities": []},
                     "answer": {"answer_type": "text", "text": not_intent_msg}}
     if len(entities) == 0:
-        print("Looking for entities")
+        # print("Looking for entities")
         entities = discover_entities(agent, user_input)
-        print("Entities found ", entities)
+        # print("Entities found ", entities)
+        logger.info("[COMPOSE] >>>>> Entities found %s", entities)
 
     requirements = get_requirements(local_intent)
-    print("Requirements ", requirements)
+    # print("Requirements ", requirements)
+    logger.info("[COMPOSE] >>>>> Requirements  %s", requirements)
     options = False
     missing_entities = None
     if requirements is not None and len(requirements) > 0:
@@ -96,7 +105,8 @@ def compose():
 
     resource = False
     options_list = None
-    print("OPTIONS STATUS", options)
+    # print("OPTIONS STATUS", options)
+    logger.info("[COMPOSE] >>>>> OPTIONS STATUS  %s", options)
     if options is True:
         options_list = get_options(missing_entities[0])
         print("OPTIONS LIST", options_list)
@@ -130,12 +140,14 @@ def compose():
         pass
 
     final_answer = build_answer(answer, answer_type)
-    print("FINAL ", final_answer)
+    # print("FINAL ", final_answer)
     resp = {"context": {"intent": local_intent, "entities": entities},
             "answer": final_answer}
 
     if len(message) > 0:
         resp["message"] = message
+
+    logger.info("[COMPOSE] >>>>> FINAL  %s", resp)
     return resp
 
 
@@ -153,7 +165,7 @@ def interactions_view():
         if "agent" in data:
             agent = Agent.query.filter_by(name=data["agent"]).first()
             interactions = get_all_unclassified_messages(agent)
-            return {"interactions": interactions}
+            return {"interactions": interactions, "agent": agent.name}
         else:
             return {"message": "Agent not found"}
     elif request.method == "PUT":

@@ -1,4 +1,3 @@
-import enum
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -69,8 +68,11 @@ def get_all_unclassified_messages(agent):
      Parameters:
         :param agent: An agent to retrieve all unclassified messages
     """
+    final_interactions = []
     interactions = Interaction.query.filter_by(classified=False, agent=agent).all()
-    return interactions
+    for inter_aux in interactions:
+        final_interactions.append({"message_id": inter_aux.id, "message": inter_aux.message})
+    return final_interactions
 
 
 def update_message_state(message_id):
