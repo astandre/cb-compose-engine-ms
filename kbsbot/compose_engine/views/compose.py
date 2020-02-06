@@ -55,7 +55,7 @@ def compose():
         # print("Looking for intent")
         local_intent = discover_intent(agent, user_input)
         # print("Intent found ", local_intent)
-        logger.info(">>>>> Intent found %s", local_intent)
+        logger.info("Intent found %s", local_intent)
         if local_intent is None:
             logger.info(">>>>> Intent not found, appending message to unclassified")
             not_intent_msg = f"Lo siento no he podido entener a que te refieres." \
@@ -66,7 +66,7 @@ def compose():
         # print("Looking for entities")
         entities = discover_entities(agent, user_input)
         # print("Entities found ", entities)
-        logger.info(">>>>> Entities found %s", entities)
+        logger.info("Entities found %s", entities)
 
     requirements = get_requirements(local_intent)
     # print("Requirements ", requirements)
