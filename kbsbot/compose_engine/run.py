@@ -1,5 +1,4 @@
 from kbsbot.compose_engine.app import create_app
-from kbsbot.compose_engine.database import db, init_database
 import os
 
 
@@ -29,10 +28,6 @@ def main():
     host = app.config.get('host', '0.0.0.0')
     port = app.config.get('port', 5000)
     debug = app.config.get('DEBUG', False)
-    db.init_app(app)
-    db.app = app
-    db.create_all(app=app)
-    init_database()
     app.run(debug=debug, host=host, port=port, use_reloader=debug)
 
 
@@ -43,7 +38,3 @@ else:
     _SETTINGS = os.path.join(_HERE, 'settings.ini')
     print("bon voyage!")
     app = create_app(settings=_SETTINGS)
-    db.init_app(app)
-    db.app = app
-    db.create_all(app=app)
-    init_database()
