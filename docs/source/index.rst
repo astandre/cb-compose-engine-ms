@@ -11,6 +11,7 @@ Check also th API description here:
    api
    services
    utils
+   database
 
 Check also the TODO lis for this project:
 

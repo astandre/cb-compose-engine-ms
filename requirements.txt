@@ -1,3 +1,4 @@
 -e git+https://github.com/Runnerly/flakon.git#egg=flakon
 flask
 requests
+flask_sqlalchemy

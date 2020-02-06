@@ -2,8 +2,11 @@ from flakon import JsonBlueprint
 from flask import request
 from kbsbot.compose_engine.compose_utils import *
 from kbsbot.compose_engine.services import *
+from kbsbot.compose_engine.database import *
 
 comp = JsonBlueprint('comp', __name__)
+
+TRAINING_TOOL = "http://example.com/train"
 
 
 @comp.route('/compose', methods=["GET"])
@@ -49,8 +52,12 @@ def compose():
         local_intent = discover_intent(agent, user_input)
         print("Intent found ", local_intent)
         if local_intent is None:
-            return {"context": {"intent": local_intent, "entities": entities},
-                    "answer": {"answer_type": "text", "text": "Lo siento no he podido entener a que te refieres"}}
+            agent = Agent.query.filter_by(name=data["agent"]).first()
+            add_unclassified_message(agent, data["message"])
+            not_intent_msg = f"Lo siento no he podido entener a que te refieres." \
+                             f"\nAyudamos a entrenar el chatbot en el siguiente enlace: {TRAINING_TOOL}"
+            return {"context": {"intent": None, "entities": []},
+                    "answer": {"answer_type": "text", "text": not_intent_msg}}
     if len(entities) == 0:
         print("Looking for entities")
         entities = discover_entities(agent, user_input)
@@ -130,6 +137,31 @@ def compose():
     if len(message) > 0:
         resp["message"] = message
     return resp
+
+
+@comp.route('/interactions', methods=["PUT", "GET"])
+def interactions_view():
+    """
+    This view handles interactions.
+
+    GET: Get all of agent unclassified messages
+
+    PUT: Update the status of a message
+    """
+    data = request.get_json()
+    if request.method == "GET":
+        if "agent" in data:
+            agent = Agent.query.filter_by(name=data["agent"]).first()
+            interactions = get_all_unclassified_messages(agent)
+            return {"interactions": interactions}
+        else:
+            return {"message": "Agent not found"}
+    elif request.method == "PUT":
+        if "message_id" in data:
+            new_message = update_message_state(data["message_id"])
+            return {"new_message": new_message.id}
+        else:
+            return {"message": "Agent not found"}
 
 
 @comp.route('/test/intent', methods=["GET"])
