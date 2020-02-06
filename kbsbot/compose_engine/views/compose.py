@@ -30,7 +30,7 @@ def compose():
     """
     data = request.get_json()
     # print(data)
-    logger.info(" >>>>> Incoming data  %s", data)
+    logger.info(">>>>> Incoming data  %s", data)
     agent = data["agent"]
     user = data["user"]
     answer = None
@@ -55,9 +55,9 @@ def compose():
         # print("Looking for intent")
         local_intent = discover_intent(agent, user_input)
         # print("Intent found ", local_intent)
-        logger.info(" >>>>> Intent found %s", local_intent)
+        logger.info(">>>>> Intent found %s", local_intent)
         if local_intent is None:
-            logger.info(" >>>>> Intent not found, appending message to unclassified")
+            logger.info(">>>>> Intent not found, appending message to unclassified")
             not_intent_msg = f"Lo siento no he podido entener a que te refieres." \
                              f"\nAyudamos a entrenar el chatbot en el siguiente enlace: {TRAINING_TOOL}"
             return {"context": {"intent": None, "entities": [], "classified": False},
@@ -66,11 +66,11 @@ def compose():
         # print("Looking for entities")
         entities = discover_entities(agent, user_input)
         # print("Entities found ", entities)
-        logger.info(" >>>>> Entities found %s", entities)
+        logger.info(">>>>> Entities found %s", entities)
 
     requirements = get_requirements(local_intent)
     # print("Requirements ", requirements)
-    logger.info(" >>>>> Requirements  %s", requirements)
+    logger.info(">>>>> Requirements  %s", requirements)
     options = False
     missing_entities = None
     if requirements is not None and len(requirements) > 0:
@@ -81,40 +81,37 @@ def compose():
             found_entities = discover_entities(agent, user_input)
             # print("Found entities in text", found_entities)
             logger.info(">>>>> Found entities in text  %s  ", found_entities)
-            if len(found_entities) > 0:
-                temp_entities = update_entities(entities, found_entities)
-                missing, missing_entities = check_requirements(requirements, temp_entities)
-                # print("Missing requirements", missing, " :", missing_entities)
-                logger.info(">>>>> Still Missing requirements  %s  ", missing_entities)
-                if missing is False:
-                    entities = temp_entities
+            missing, missing_entities = check_requirements(requirements, found_entities)
+            # print("Missing requirements", missing, " :", missing_entities)
+            logger.info(">>>>> Still Missing requirements  %s  ", missing_entities)
+            if missing is False:
+                entities = update_entities(entities, found_entities)
+
         if missing is True:
             found_entities = find_in_context(user, missing_entities)
             # print("Found entities in context", found_entities)
             logger.info(">>>>> Found entities in context  %s  ", found_entities)
-            if len(found_entities) > 0:
-                temp_entities = update_entities(entities, found_entities)
-                missing, missing_entities = check_requirements(requirements, temp_entities)
-                # print("Missing requirements", missing, " :", missing_entities)
-                logger.info(">>>>> Still Missing requirements  %s  ", missing_entities)
-                if missing is False:
-                    entities = temp_entities
+            missing, missing_entities = check_requirements(requirements, found_entities)
+            # print("Missing requirements", missing, " :", missing_entities)
+            logger.info(">>>>> Still Missing requirements  %s  ", missing_entities)
+            if missing is False:
+                entities = update_entities(entities, found_entities)
+
         if missing is True:
             # print("Still Missing requirements", missing_entities)
             logger.info(">>>>> Still Missing requirements  %s  ", missing_entities)
             options = True
-
     else:
         message += "Null requirements"
 
     resource = False
     options_list = None
     # print("OPTIONS STATUS", options)
-    logger.info(" >>>>> OPTIONS STATUS  %s", options)
+    logger.info(">>>>> OPTIONS STATUS  %s", options)
     if options is True:
         options_list = get_options(missing_entities[0])
         # print("OPTIONS LIST", options_list)
-        logger.info(" >>>>> OPTIONS LIST  %s", options_list)
+        logger.info(">>>>> OPTIONS LIST  %s", options_list)
         if len(options_list) == 0:
             return {"context": {"intent": local_intent, "entities": entities, "classified": True},
                     "answer": {"answer_type": answer_type, "text": "No existen opciones, que deseas conocer?"}}
@@ -154,7 +151,7 @@ def compose():
     if len(message) > 0:
         resp["message"] = message
 
-    logger.info(" >>>>> FINAL  %s", resp)
+    logger.info(">>>>> FINAL  %s", resp)
     return resp
 
 
