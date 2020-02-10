@@ -121,7 +121,7 @@ def compose():
         # print("OPTIONS LIST", options_list)
         logger.info("OPTIONS LIST  %s", options_list)
         if len(options_list) == 0:
-            return {"context": {"intent": local_intent, "entities": entities, "classified": True},
+            return {"context": {"intent": local_intent, "entities": entities, "classified": False},
                     "answer": {"answer_type": answer_type, "text": "No existen opciones, que deseas conocer?"}}
         else:
             answer = {"options": options_list}
@@ -153,7 +153,7 @@ def compose():
 
     final_answer = build_answer(answer, answer_type)
     # print("FINAL ", final_answer)
-    resp = {"context": {"intent": local_intent, "entities": entities, "classified": True},
+    resp = {"context": {"intent": local_intent, "entities": entities, "classified": False},
             "answer": final_answer}
 
     if len(message) > 0:

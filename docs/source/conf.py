@@ -12,8 +12,8 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../kbsbot/compose_engine/'))
 
+sys.path.insert(0, os.path.abspath('../../kbsbot/compose_engine/'))
 
 # -- Project information -----------------------------------------------------
 
