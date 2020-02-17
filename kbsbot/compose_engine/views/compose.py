@@ -14,6 +14,11 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 
+@comp.route('/status', methods=["GET"])
+def get_status():
+    return {"message": "ok"}
+
+
 @comp.route('/compose', methods=["GET"])
 def compose():
     """
