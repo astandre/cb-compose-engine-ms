@@ -58,9 +58,10 @@ def compose():
     message = ""
     if local_intent is None:
         # print("Looking for intent")
-        local_intent = discover_intent(agent, user_input)
+        if len(user_input) > 0:
+            local_intent = discover_intent(agent, user_input)
         # print("Intent found ", local_intent)
-        logger.info("Intent found %s", local_intent)
+        # logger.info("Intent found %s", local_intent)
         if local_intent is None:
             logger.info(">>>>> Intent not found, appending message to unclassified")
             not_intent_msg = f"Lo siento no he podido entener a que te refieres." \
